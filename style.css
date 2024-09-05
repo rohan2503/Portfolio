@@ -16,9 +16,9 @@ body {
     position: absolute;
     text-align: center;
     font-family: 'Inter', sans-serif;
-    font-size: 5em;
-    font-weight: 700;
-    letter-spacing: 0.05em;
+    font-size: 6em;  /* Increased font size */
+    font-weight: 1000;  /* Increased font weight for bolder text */
+    letter-spacing: 0.08em;
     z-index: 1;
     color: white;
     text-transform: uppercase;
