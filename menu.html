@@ -53,5 +53,18 @@
     <button class="close-button" aria-label="Close">×</button>
 
     <script src="menu-script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.body.style.opacity = '0';
+        setTimeout(() => {
+            document.body.style.opacity = '1';
+            
+            const menuItems = document.querySelectorAll('.menu-container nav ul li');
+            menuItems.forEach((item, index) => {
+                item.style.animation = `textReveal 0.5s ease-out ${index * 0.1}s forwards`;
+            });
+        }, 100);
+    });
+    </script>
 </body>
 </html>

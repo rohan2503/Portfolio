@@ -263,9 +263,14 @@ body {
     visibility: hidden;
     transition: opacity 0.5s ease, visibility 0.5s ease;
     z-index: 1000;
-}
-
-#fade-overlay.active {
+  }
+  
+  #fade-overlay.active {
     opacity: 1;
     visibility: visible;
+  }
+
+.menu-container nav ul li {
+    margin-bottom: 1rem;
+    clip-path: inset(0 100% 0 0);
 }

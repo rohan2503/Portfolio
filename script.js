@@ -195,16 +195,91 @@ function updatePhysics() {
 
 
 function openMenu() {
-    window.location.href = 'menu.html';
+    const fadeOverlay = document.getElementById('fade-overlay');
+    fadeOverlay.classList.add('active');
+    
+    setTimeout(() => {
+        window.location.href = 'menu.html';
+    }, 500); // This duration should match your CSS transition
 }
 
 document.querySelector('.home-button').addEventListener('click', function(e) {
     e.preventDefault();
-    // Add your transition effect here
+    document.body.style.opacity = 0;
     setTimeout(() => {
         window.location.href = this.href;
-    }, 300); // Adjust timing as needed
+    }, 500);
 });
+
+// Add event listener for the menu button
+document.querySelector('.menu-button').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent any default action
+    window.location.href = 'menu.html'; // Redirect to the menu page
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const menuButton = document.querySelector('.menu-button');
+    const transitionOverlay = document.getElementById('page-transition-overlay');
+    
+    menuButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        // Start the transition
+        transitionOverlay.style.transform = 'scaleY(1)';
+        
+        setTimeout(() => {
+            document.body.style.opacity = '0';
+        }, 250);
+        
+        setTimeout(() => {
+            window.location.href = 'menu.html';
+        }, 500);
+    });
+});
+
+function showMenuOverlay() {
+    // Create menu overlay if it doesn't exist
+    let menuOverlay = document.querySelector('.menu-overlay');
+    if (!menuOverlay) {
+        menuOverlay = document.createElement('div');
+        menuOverlay.className = 'menu-overlay';
+        document.body.appendChild(menuOverlay);
+        
+        // Add menu content
+        menuOverlay.innerHTML = `
+            <div class="menu-content">
+                <button class="close-menu">×</button>
+                <h2>Menu</h2>
+                <nav>
+                    <ul>
+                        <li><a href="#projects">Projects</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#resume">Resume</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        `;
+        
+        // Add close button functionality
+        const closeButton = menuOverlay.querySelector('.close-menu');
+        closeButton.addEventListener('click', hideMenuOverlay);
+    }
+    
+    // Show the overlay
+    menuOverlay.style.display = 'flex';
+    setTimeout(() => {
+        menuOverlay.style.opacity = '1';
+    }, 10);
+}
+
+function hideMenuOverlay() {
+    const menuOverlay = document.querySelector('.menu-overlay');
+    menuOverlay.style.opacity = '0';
+    setTimeout(() => {
+        menuOverlay.style.display = 'none';
+    }, 300);
+}
 
 init();
 animate();
