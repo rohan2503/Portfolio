@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap');
+
+body { 
+    margin: 0; 
+    overflow: hidden; 
+    background: linear-gradient(135deg, #BDC7D9 0%, #9BA5B8 100%);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#info {
+    position: absolute;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 6em;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    z-index: 1;
+    color: white;
+    text-transform: uppercase;
+    top: 45%; /* Adjust this value to move the text up or down */
+    transform: translateY(-50%);
+}
+
+#subtitle {
+    position: absolute;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 2.0em;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    z-index: 1;
+    color: white;
+    text-transform: lowercase;
+    top: calc(45% + 3em); /* Adjust this value to match the main text position */
+    transform: translateY(-50%);
+}
