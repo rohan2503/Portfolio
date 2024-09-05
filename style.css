@@ -45,24 +45,77 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
+    width: 100px;
+    height: 40px;
     background: none;
     border: none;
     cursor: pointer;
-    z-index: 10;
-}
-
-.menu-button span {
-    display: block;
-    width: 30px;
-    height: 3px;
-    background-color: rgba(13, 3, 3, 0.704);
-    margin: 6px 0;
-    transition: 0.4s;
-}
-
-.menu-button:hover span {
-    background-color: #010000;
-}
+    overflow: hidden;
+    perspective: 1000px;
+  }
+  
+  .menu-button span {
+    position: relative;
+    z-index: 2;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+  }
+  
+  .menu-button-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #4a90e2, #5b9bd5);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  
+  .menu-button::before,
+  .menu-button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .menu-button:hover .menu-button-background {
+    transform: skew(-10deg);
+  }
+  
+  .menu-button:hover span {
+    transform: scale(1.1);
+  }
+  
+  .menu-button:hover::before {
+    opacity: 1;
+    transform: translate(25%, 25%);
+  }
+  
+  .menu-button:hover::after {
+    opacity: 1;
+    transform: translate(-25%, -25%) rotate(180deg);
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  
+  .menu-button:hover {
+    animation: pulse 1.5s infinite;
+  }
 
 #fade-overlay {
     position: fixed;
@@ -137,3 +190,4 @@ body {
     0% { clip-path: inset(0 100% 0 0); }
     100% { clip-path: inset(0 0 0 0); }
 }
+
