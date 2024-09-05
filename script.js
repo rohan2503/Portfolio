@@ -193,11 +193,9 @@ function updatePhysics() {
     });
 }
 
-function openNewPage() {
-    window.open('new-page.html', '_blank');
-}
+
 function openMenu() {
-    window.open('menu.html', '_blank', 'width=800,height=600');
+    window.location.href = 'menu.html';
 }
 
 init();
