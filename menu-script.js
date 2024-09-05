@@ -39,4 +39,19 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error('Close button not found');
     }
+
+    document.querySelector('.home-button').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.body.style.opacity = 0;
+        setTimeout(() => {
+            window.location.href = this.href;
+        }, 500);
+    });
+
+    const resumeCard = document.getElementById('resume-card');
+    
+    resumeCard.addEventListener('click', function() {
+        // Replace 'path/to/your/resume.pdf' with the actual path to your resume file
+        window.open('Rohan_Yogananda_RESUME.pdf', '_blank');
+    });
 });

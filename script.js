@@ -198,5 +198,13 @@ function openMenu() {
     window.location.href = 'menu.html';
 }
 
+document.querySelector('.home-button').addEventListener('click', function(e) {
+    e.preventDefault();
+    // Add your transition effect here
+    setTimeout(() => {
+        window.location.href = this.href;
+    }, 300); // Adjust timing as needed
+});
+
 init();
 animate();

@@ -3,34 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menu - Rohan's Portfolio</title>
+    <title>Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="menu-style.css">
 </head>
 <body>
+    <svg width="0" height="0">
+        <filter id="metallic-text">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" result="noise"/>
+            <feDiffuseLighting in="noise" lighting-color="#fff" surfaceScale="1" result="diffLight">
+                <feDistantLight azimuth="225" elevation="40" />
+            </feDiffuseLighting>
+            <feComposite in="SourceGraphic" in2="diffLight" operator="arithmetic" k1="1" k2="0" k3="0.7" k4="0" />
+        </filter>
+    </svg>
+
     <div class="menu-container">
         <div id="card1" class="card horizontal clickable">
-            <h2>Projects</h2>
+            <h2 class="metallic-text">Projects</h2>
         </div>
+
         <div id="card2" class="card vertical clickable">
-            <h2>About</h2>
+            <h2 class="metallic-text">About</h2>
         </div>
-        <div id="card3" class="card center clickable">
-            <h2>R</h2>
+
+        <div class="home-button-container">
+            <div class="geometric-background"></div>
+            <a href="index.html" class="home-button">
+                <span>R.</span> <!-- Removed metallic-text class -->
+            </a>
         </div>
-        <div id="card4" class="card vertical clickable">
-            <h2>Resume</h2>
+
+        <div id="resume-card" class="card vertical clickable">
+            <h2 class="metallic-text">Resume</h2>
         </div>
+
         <div id="card5" class="card horizontal contact">
-            <h2>Contact</h2>
+            <h2 class="metallic-text">Contact</h2>
             <div class="contact-info">
-                <p>lushiyun@outlook.com</p>
-                <p>github.com/lushiyun</p>
-                <p>twitter.com/lu_shiyun</p>
+                <a href="mailto:rohangowdahy@gmail.com">rohangowdahy@gmail.com</a>
+                <a href="https://www.linkedin.com/in/rohan-y-j/" target="_blank" rel="noopener noreferrer">linkedin.com/rohan-y-j</a>
+                
             </div>
         </div>
     </div>
+
     <div id="fade-overlay"></div>
-    <button class="close-button">×</button>
+
+    <button class="close-button" aria-label="Close">×</button>
+
     <script src="menu-script.js"></script>
 </body>
 </html>
