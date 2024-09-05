@@ -140,6 +140,11 @@ function toggleSubtitle() {
     isSubtitleChanged = !isSubtitleChanged;
 }
 
+function toggleMenu() {
+    const menuOverlay = document.querySelector('.menu-overlay');
+    menuOverlay.classList.toggle('open');
+}
+
 function animate() {
     requestAnimationFrame(animate);
     
@@ -186,6 +191,13 @@ function updatePhysics() {
             }
         });
     });
+}
+
+function openNewPage() {
+    window.open('new-page.html', '_blank');
+}
+function openMenu() {
+    window.open('menu.html', '_blank', 'width=800,height=600');
 }
 
 init();
