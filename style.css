@@ -3,21 +3,22 @@
 body { 
     margin: 0; 
     overflow: hidden; 
-    background: linear-gradient(135deg, #BDC7D9 0%, #9BA5B8 100%);
+    background-color: #E6E9EE;  /* Light blue-gray background */
     height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    background: linear-gradient(135deg, #E6E9EE 0%, #D0D3D8 100%);
 }
+
 
 #info {
     position: absolute;
     text-align: center;
     font-family: 'Inter', sans-serif;
-    font-size: 6em;
-    font-weight: 800;
-    letter-spacing: 0.07em;
+    font-size: 5em;
+    font-weight: 700;
+    letter-spacing: 0.05em;
     z-index: 1;
     color: white;
     text-transform: uppercase;
@@ -29,9 +30,9 @@ body {
     position: absolute;
     text-align: center;
     font-family: 'Inter', sans-serif;
-    font-size: 2.0em;
+    font-size: 1.5em;
     font-weight: 400;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.05em;
     z-index: 1;
     color: white;
     text-transform: lowercase;

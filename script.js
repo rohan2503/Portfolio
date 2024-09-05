@@ -1,7 +1,7 @@
 let scene, camera, renderer, spheres = [];
 let raycaster, mouse;
-let hoveredSphere = null;
 let clock = new THREE.Clock();
+let isSubtitleChanged = false;
 
 function init() {
     scene = new THREE.Scene();
@@ -13,25 +13,55 @@ function init() {
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
 
-    // Create spheres
-    const material = new THREE.MeshStandardMaterial({ 
-        color: 0xD1D8E0,  // Light gray color
-        metalness: 0.5,
-        roughness: 0.7
+    // Custom shader material for gradient effect with shininess
+    const gradientMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+            color1: { value: new THREE.Color(0xF0F0F0) },
+            color2: { value: new THREE.Color(0xC0C0C0) },
+            lightPosition: { value: new THREE.Vector3(5, 5, 5) }
+        },
+        vertexShader: `
+            varying vec2 vUv;
+            varying vec3 vNormal;
+            varying vec3 vViewPosition;
+            void main() {
+                vUv = uv;
+                vNormal = normalize(normalMatrix * normal);
+                vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                vViewPosition = -mvPosition.xyz;
+                gl_Position = projectionMatrix * mvPosition;
+            }
+        `,
+        fragmentShader: `
+            uniform vec3 color1;
+            uniform vec3 color2;
+            uniform vec3 lightPosition;
+            varying vec2 vUv;
+            varying vec3 vNormal;
+            varying vec3 vViewPosition;
+            void main() {
+                vec3 baseColor = mix(color1, color2, smoothstep(0.0, 1.0, vUv.y));
+                vec3 lightDir = normalize(lightPosition - vViewPosition);
+                float diffuse = max(dot(vNormal, lightDir), 0.0);
+                float specular = pow(max(dot(reflect(-lightDir, vNormal), normalize(vViewPosition)), 0.0), 64.0);
+                vec3 finalColor = baseColor * (0.2 + 0.8 * diffuse) + vec3(0.3) * specular;
+                gl_FragColor = vec4(finalColor, 1.0);
+            }
+        `
     });
-    
-    const numSpheres = 20;  // Reduced number of spheres to prevent overcrowding
-    const minDistance = 0.05; // Minimum distance between sphere centers
-    
+
+    const numSpheres = 40;
+    const minDistance = 0.1;
+
     for (let i = 0; i < numSpheres; i++) {
-        const size = Math.random() * 0.2 + 0.6; // Adjusted size range
+        const size = Math.random() * 0.3 + 0.3;
         const geometry = new THREE.SphereGeometry(size, 32, 32);
-        const sphere = new THREE.Mesh(geometry, material);
-        
+        const sphere = new THREE.Mesh(geometry, gradientMaterial);
+
         let position;
         let attempts = 0;
         do {
-            position = getRandomPosition(2.5); // Increased radius for more spread
+            position = getRandomPosition(1.8);
             attempts++;
         } while (isTooClose(position, size, minDistance) && attempts < 100);
 
@@ -39,27 +69,20 @@ function init() {
             sphere.position.copy(position);
             sphere.userData = { 
                 originalPosition: sphere.position.clone(), 
-                bounceOffset: Math.random() * Math.PI * 2,
-                bounceSpeed: 0.5 + Math.random() * 0.5
+                velocity: new THREE.Vector3(),
+                size: size
             };
             scene.add(sphere);
             spheres.push(sphere);
         }
     }
 
-    // Add lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
-
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
-
-    camera.position.z = 6;
-    camera.position.y = -0.5;
+    camera.position.z = 5;
+    camera.position.y = -0.2;
 
     window.addEventListener('resize', onWindowResize, false);
     document.addEventListener('mousemove', onDocumentMouseMove, false);
+    document.addEventListener('click', onDocumentClick, false);
 }
 
 function getRandomPosition(radius) {
@@ -78,7 +101,7 @@ function getRandomPosition(radius) {
 function isTooClose(position, size, minDistance) {
     for (let sphere of spheres) {
         const distance = position.distanceTo(sphere.position);
-        if (distance < (size + sphere.geometry.parameters.radius + minDistance)) {
+        if (distance < (size + sphere.userData.size + minDistance)) {
             return true;
         }
     }
@@ -97,51 +120,72 @@ function onDocumentMouseMove(event) {
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 }
 
+function onDocumentClick(event) {
+    event.preventDefault();
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(spheres);
+
+    if (intersects.length > 0) {
+        toggleSubtitle();
+    }
+}
+
+function toggleSubtitle() {
+    const subtitle = document.getElementById('subtitle');
+    if (isSubtitleChanged) {
+        subtitle.textContent = 'software engineer.';
+    } else {
+        subtitle.textContent = 'frontend enthusiast.';
+    }
+    isSubtitleChanged = !isSubtitleChanged;
+}
+
 function animate() {
     requestAnimationFrame(animate);
-    
-    const time = clock.getElapsedTime();
     
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(spheres);
 
-    spheres.forEach(sphere => {
-        if (sphere === hoveredSphere) {
-            animateHoveredSphere(sphere);
-        } else {
-            animateIdleSphere(sphere, time);
-        }
-    });
-
     if (intersects.length > 0) {
-        if (hoveredSphere !== intersects[0].object) {
-            hoveredSphere = intersects[0].object;
-        }
-    } else {
-        hoveredSphere = null;
+        const hoveredSphere = intersects[0].object;
+        const pushForce = new THREE.Vector3().subVectors(hoveredSphere.position, camera.position).normalize().multiplyScalar(0.01);
+        hoveredSphere.userData.velocity.add(pushForce);
     }
 
+    updatePhysics();
     renderer.render(scene, camera);
 }
 
-function animateHoveredSphere(sphere) {
-    sphere.userData.bounceOffset += 0.1;
-    const bounceHeight = Math.sin(sphere.userData.bounceOffset) * 0.1;
-    sphere.position.y = sphere.userData.originalPosition.y + bounceHeight;
-}
+function updatePhysics() {
+    const damping = 0.98;
+    const springStrength = 0.01;
 
-function animateIdleSphere(sphere, time) {
-    const bounceHeight = Math.sin(time * sphere.userData.bounceSpeed + sphere.userData.bounceOffset) * 0.05;
-    sphere.position.y = sphere.userData.originalPosition.y + bounceHeight;
-    
-    // Add a slight circular motion
-    const circleRadius = 0.02;
-    sphere.position.x = sphere.userData.originalPosition.x + Math.cos(time * 0.5 + sphere.userData.bounceOffset) * circleRadius;
-    sphere.position.z = sphere.userData.originalPosition.z + Math.sin(time * 0.5 + sphere.userData.bounceOffset) * circleRadius;
-    
-    // Slow rotation
-    sphere.rotation.x += 0.002;
-    sphere.rotation.y += 0.002;
+    spheres.forEach(sphere => {
+        const displacement = new THREE.Vector3().subVectors(sphere.userData.originalPosition, sphere.position);
+        const springForce = displacement.multiplyScalar(springStrength);
+        sphere.userData.velocity.add(springForce);
+
+        sphere.position.add(sphere.userData.velocity);
+        sphere.userData.velocity.multiplyScalar(damping);
+
+        spheres.forEach(otherSphere => {
+            if (sphere !== otherSphere) {
+                const distance = sphere.position.distanceTo(otherSphere.position);
+                const minDist = sphere.userData.size + otherSphere.userData.size;
+                if (distance < minDist) {
+                    const normal = new THREE.Vector3().subVectors(otherSphere.position, sphere.position).normalize();
+                    const separationVector = normal.multiplyScalar(minDist - distance);
+                    sphere.position.sub(separationVector.multiplyScalar(0.5));
+                    otherSphere.position.add(separationVector.multiplyScalar(0.5));
+
+                    const relativeVelocity = new THREE.Vector3().subVectors(sphere.userData.velocity, otherSphere.userData.velocity);
+                    const impulse = normal.multiplyScalar(relativeVelocity.dot(normal) * 0.5);
+                    sphere.userData.velocity.sub(impulse);
+                    otherSphere.userData.velocity.add(impulse);
+                }
+            }
+        });
+    });
 }
 
 init();
