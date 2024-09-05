@@ -23,4 +23,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    function handleWrongButtonClick() {
+        const fadeOverlay = document.getElementById('fade-overlay');
+        fadeOverlay.classList.add('active');
+        
+        setTimeout(() => {
+            window.location.href = 'index.html'; // Replace with your home page URL
+        }, 500); // Adjust this timing to match your fade duration
+    }
+
+    const closeButton = document.querySelector('.close-button');
+    if (closeButton) {
+        closeButton.addEventListener('click', handleWrongButtonClick);
+    } else {
+        console.error('Close button not found');
+    }
 });
