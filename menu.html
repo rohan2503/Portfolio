@@ -26,6 +26,22 @@
         <div id="card2" class="card vertical clickable">
             <h2 class="metallic-text">About</h2>
         </div>
+        
+        <!-- Add the overlay div here -->
+        <div id="overlay"></div>
+        
+        <div id="about-popup" class="popup">
+            <div class="popup-content">
+              <span class="close-btn">&times;</span>
+              <img src="IMG_4689.jpg" alt="Your Name" class="profile-picture">
+              <div class="about-text">
+                <p>Based in [Your Location], I'm currently a software engineer at [Your Company].</p>
+                <p>[Add a brief description about your professional background]</p>
+                <p>[Add a paragraph about your personal interests or experiences]</p>
+                <p>[Add any other relevant information]</p>
+              </div>
+            </div>
+          </div>
 
         <div class="home-button-container">
             <div class="geometric-background"></div>
@@ -66,5 +82,14 @@
         }, 100);
     });
     </script>
+
+    <div id="resume-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn">&times;</span>
+            <iframe id="resume-iframe" src="" width="100%" height="100%"></iframe>
+        </div>
+    </div>
+
+    
 </body>
 </html>
