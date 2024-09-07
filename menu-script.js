@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
             switch(cardId) {
                 case 'card1':
                     console.log('Projects clicked');
-                    // Add action for Projects
+                    console.log('Projects clicked');
+                    window.location.href = 'projects.html'; // Redirect to projects page
                     break;
                 case 'card2':
                     console.log('About clicked');
