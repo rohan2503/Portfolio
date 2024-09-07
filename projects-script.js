@@ -5,14 +5,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     techButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const tech = this.getAttribute('data-tech');
+            const tech = this.textContent.trim();
+            console.log('Clicked tech:', tech);
             
-            if (tech === 'all') {
+            if (tech === 'All') {
                 activeFilters.clear();
                 techButtons.forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
             } else {
-                document.querySelector('[data-tech="all"]').classList.remove('active');
+                document.querySelector('.tech-btn:first-child').classList.remove('active');
                 this.classList.toggle('active');
                 
                 if (activeFilters.has(tech)) {
@@ -21,18 +22,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     activeFilters.add(tech);
                 }
             }
-
+            
+            console.log('Active filters:', Array.from(activeFilters));
             filterProjects();
         });
     });
 
     function filterProjects() {
         projects.forEach(project => {
-            const projectTechs = project.getAttribute('data-techs').split(' ');
+            const projectTechs = Array.from(project.querySelectorAll('.tag')).map(tag => tag.textContent.trim());
+            console.log('Project techs:', projectTechs);
+            
             if (activeFilters.size === 0 || projectTechs.some(tech => activeFilters.has(tech))) {
                 project.style.display = '';
+                console.log('Showing project:', project.querySelector('h3').textContent);
             } else {
                 project.style.display = 'none';
+                console.log('Hiding project:', project.querySelector('h3').textContent);
             }
         });
     }
